@@ -1,6 +1,7 @@
+
 import React from 'react';
 import { User, UserRole } from '../types';
-import { LayoutDashboard, Send, Wallet, LogOut, ShieldCheck } from 'lucide-react';
+import { LayoutDashboard, Send, Wallet, LogOut, ShieldCheck, UserCheck } from 'lucide-react';
 
 interface SidebarProps {
   user: User;
@@ -19,6 +20,7 @@ const Sidebar: React.FC<SidebarProps> = ({ user, onNavigate, currentPage, onLogo
         { id: 'dashboard', label: 'Tableau de bord', icon: LayoutDashboard },
         { id: 'deposit', label: 'Dépôt (KKIAPAY)', icon: Wallet },
         { id: 'transfer', label: 'Transfert', icon: Send },
+        { id: 'verify', label: 'Mon Identité', icon: UserCheck },
       ];
 
   return (
@@ -44,6 +46,9 @@ const Sidebar: React.FC<SidebarProps> = ({ user, onNavigate, currentPage, onLogo
             >
               <item.icon size={20} />
               <span className="font-medium">{item.label}</span>
+              {item.id === 'verify' && !user.isVerified && (
+                  <div className="w-2 h-2 bg-red-500 rounded-full ml-auto animate-pulse"></div>
+              )}
             </button>
           ))}
         </nav>
@@ -51,12 +56,15 @@ const Sidebar: React.FC<SidebarProps> = ({ user, onNavigate, currentPage, onLogo
 
       <div className="p-4 border-t border-slate-700">
         <div className="flex items-center gap-3 mb-4 px-2">
-            <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-sm font-bold">
-                {user.name.charAt(0)}
+            <div className="w-10 h-10 rounded-full bg-blue-500 border-2 border-slate-700 flex items-center justify-center text-sm font-bold overflow-hidden">
+                {user.faceData ? <img src={user.faceData} className="w-full h-full object-cover" /> : user.name.charAt(0)}
             </div>
             <div className="overflow-hidden">
-                <p className="text-sm font-medium truncate">{user.name}</p>
-                <p className="text-xs text-slate-400 truncate">{user.email}</p>
+                <p className="text-sm font-medium truncate flex items-center gap-1">
+                    {user.name}
+                    {user.isVerified && <UserCheck size={12} className="text-blue-400" />}
+                </p>
+                <p className="text-xs text-slate-400 truncate">{user.role}</p>
             </div>
         </div>
         <button 

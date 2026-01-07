@@ -1,5 +1,5 @@
 {
-  "name": "copy-of-bleutooth-service",
+  "name": "bleutooth-service",
   "private": true,
   "version": "0.0.0",
   "type": "module",

@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { User, UserRole } from './types';
 import { AuthService } from './services/mockDatabase';
@@ -7,6 +8,7 @@ import ClientDashboard from './pages/client/ClientDashboard';
 import Deposit from './pages/client/Deposit';
 import Transfer from './pages/client/Transfer';
 import AdminDashboard from './pages/admin/AdminDashboard';
+import IdentityVerification from './pages/client/IdentityVerification';
 
 const App: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -16,7 +18,6 @@ const App: React.FC = () => {
     const storedUser = AuthService.getCurrentUser();
     if (storedUser) {
       setUser(storedUser);
-      // Set default page based on role
       setCurrentPage(storedUser.role === UserRole.ADMIN ? 'admin-dashboard' : 'dashboard');
     }
   }, []);
@@ -39,14 +40,18 @@ const App: React.FC = () => {
     if (user.role === UserRole.ADMIN) {
         switch (currentPage) {
             case 'admin-dashboard': return <AdminDashboard />;
-            case 'validation': return <AdminDashboard />; // Re-use for demo simplicity
             default: return <AdminDashboard />;
         }
     } else {
         switch (currentPage) {
             case 'dashboard': return <ClientDashboard user={user} />;
             case 'deposit': return <Deposit onSuccess={() => setCurrentPage('dashboard')} />;
-            case 'transfer': return <Transfer onSuccess={() => setCurrentPage('dashboard')} />;
+            case 'transfer': return <Transfer onSuccess={() => setCurrentPage('dashboard')} onNavigateToVerify={() => setCurrentPage('verify')} />;
+            case 'verify': return <IdentityVerification onComplete={() => {
+                // Refresh local user state
+                setUser(AuthService.getCurrentUser());
+                setCurrentPage('dashboard');
+            }} />;
             default: return <ClientDashboard user={user} />;
         }
     }

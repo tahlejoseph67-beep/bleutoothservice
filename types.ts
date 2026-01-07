@@ -1,3 +1,4 @@
+
 export enum UserRole {
   ADMIN = 'ADMIN',
   CLIENT = 'CLIENT',
@@ -8,7 +9,10 @@ export interface User {
   name: string;
   email: string;
   role: UserRole;
-  balance: number; // In FCFA
+  balance: number;
+  pinCode: string; // Nouveau: Code unique de connexion
+  faceData?: string; // Nouveau: Base64 de la photo de référence
+  isVerified: boolean; // Nouveau: Statut de vérification d'identité
 }
 
 export enum TransactionType {
@@ -37,10 +41,10 @@ export interface Transaction {
   type: TransactionType;
   amount: number;
   method: PaymentMethod;
-  recipient?: string; // Account number, phone number, etc.
+  recipient?: string;
   date: string;
   status: TransactionStatus;
-  adminNote?: string; // Optional note from admin
+  adminNote?: string;
 }
 
 export interface DashboardStats {
